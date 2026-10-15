@@ -11,11 +11,11 @@ if (!isset($_GET['showtime_id'])) { //mengecek apakah parameter 'showtime_id' ad
 $showtimeID = $_GET['showtime_id'];//mengambil nilai parameter 'showtime_id' dari URL dan menyimpannya dalam variabel $showtimeID
 
 // 2. Ambil detail jadwal (film, studio, harga)
-$queryJadwal = "SELECT showtime.*, movies.title, movies.poster, studio.studio_name //mengambil semua data dari tabel showtime, judul film dan poster dari tabel movies, dan nama studio dari tabel studio
-                FROM showtime //dijadikan sumber data utama
-                JOIN movies ON showtime.movieID = movies.movieID //menggabungkan tabel showtime dengan movies untuk mendapatkan judul film dan poster
-                JOIN studio ON showtime.studioID = studio.studioID //menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
-                WHERE showtime.showtimeID = '$showtimeID'"; //dimana showtimeID di tabel showtime sama dengan $showtimeID
+$queryJadwal = "SELECT showtime.*, movies.title, movies.poster, studio.studio_name #mengambil semua data dari tabel showtime, judul film dan poster dari tabel movies, dan nama studio dari tabel studio
+                FROM showtime #dijadikan sumber data utama
+                JOIN movies ON showtime.movieID = movies.movieID #menggabungkan tabel showtime dengan movies untuk mendapatkan judul film dan poster
+                JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
+                WHERE showtime.showtimeID = '$showtimeID'"; #dimana showtimeID di tabel showtime sama dengan $showtimeID
 $resultJadwal = mysqli_query($koneksi, $queryJadwal);//mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultJadwal
 $jadwal = mysqli_fetch_assoc($resultJadwal);//mengambil satu baris hasil query sebagai array asosiatif dan menyimpannya dalam variabel $jadwal
 

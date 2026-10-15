@@ -11,11 +11,11 @@ if (!isset($_GET['id'])) { //mengecek apakah parameter 'id' ada di URL.
 $movieID = $_GET['id'];//mengambil nilai parameter 'id' dari URL dan menyimpannya dalam variabel $movieID
 
 // 2. Ambil detail film beserta genrenya
-$queryFilm = "SELECT movies.*, GROUP_CONCAT(genres.genre_name SEPARATOR ', ') AS genre_list //mengambil semua data dari tabel movies dan menggabungkan nama genre dari tabel genre menjadi 1 teks, hasilnya diberi nama genre_list
-              FROM movies //dijadikan sumber data utama
-              LEFT JOIN movie_genres ON movies.movieID = movie_genres.movieID //menggabungkan tabel movies dengan movie_genres untuk mendapatkan genre film
-              LEFT JOIN genres ON movie_genres.genreID = genres.genreID  //menggabungkan tabel movie_genres dengan genres untuk mendapatkan nama genre 
-              WHERE movies.movieID = '$movieID' //memfilter hasil query untuk hanya mengambil film dengan ID yang sesuai dengan $movieID
+$queryFilm = "SELECT movies.*, GROUP_CONCAT(genres.genre_name SEPARATOR ', ') AS genre_list  #mengambil semua data dari tabel movies dan menggabungkan nama genre dari tabel genre menjadi 1 teks, hasilnya diberi nama genre_list
+              FROM movies #dijadikan sumber data utama
+              LEFT JOIN movie_genres ON movies.movieID = movie_genres.movieID #menggabungkan tabel movies dengan movie_genres untuk mendapatkan genre film
+              LEFT JOIN genres ON movie_genres.genreID = genres.genreID  #menggabungkan tabel movie_genres dengan genres untuk mendapatkan nama genre 
+              WHERE movies.movieID = '$movieID' #memfilter hasil query untuk hanya mengambil film dengan ID yang sesuai dengan $movieID
               GROUP BY movies.movieID"; //mengelompokkan hasil agar setiap film hanya muncul sekali
 $resultFilm = mysqli_query($koneksi, $queryFilm); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultFilm
 $film = mysqli_fetch_assoc($resultFilm); //mengambil satu baris hasil query sebagai array asosiatif dan menyimpannya dalam variabel $film
@@ -25,10 +25,10 @@ if (!$film) {
 }
 
 // 3. Ambil jadwal tayang film ini digabung dengan studio
-$queryJadwal = "SELECT showtime.*, studio.studio_name //mengambil semua data dari tabel showtime dan nama studio dari tabel studio
-                FROM showtime //dijadikan sumber data utama
-                JOIN studio ON showtime.studioID = studio.studioID //menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
-                WHERE showtime.movieID = '$movieID' //dimana movieID di tabel showtime sama dengan $movieID
+$queryJadwal = "SELECT showtime.*, studio.studio_name #mengambil semua data dari tabel showtime dan nama studio dari tabel studio
+                FROM showtime #dijadikan sumber data utama
+                JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
+                WHERE showtime.movieID = '$movieID' #dimana movieID di tabel showtime sama dengan $movieID
                 ORDER BY showtime.show_date ASC, showtime.start_time ASC";
 $resultJadwal = mysqli_query($koneksi, $queryJadwal); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultJadwal
 ?>
