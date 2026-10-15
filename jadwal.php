@@ -2,6 +2,12 @@
 session_start();//manggil session_start() untuk memulai sesi pengguna
 include 'koneksi.php';//manggil koneksi.php untuk koneksi ke database
 
+// SATPAM: Jika belum login (masih Guest), tendang ke halaman login
+if (!isset($_SESSION['customerID'])) {
+    header("Location: login.php");
+    exit;
+}
+
 // 1. Validasi: Pastikan ada ID film di URL
 if (!isset($_GET['id'])) { //mengecek apakah parameter 'id' ada di URL.
     header("Location: index.php");//jika tidak ada, maka langsung alihkan ke halaman index.php
