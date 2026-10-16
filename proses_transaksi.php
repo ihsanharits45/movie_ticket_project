@@ -26,7 +26,7 @@ if (mysqli_num_rows($checkCustomer) > 0) {
     $customerID = $cust['customerID']; //mengambil nilai customerID dari array asosiatif $cust dan menyimpannya dalam variabel $customerID
 } else {
     // Jika pelanggan baru, tambahkan ke tabel customers
-    $queryNewCust = "INSERT INTO customers (name, email, password, phone) //menyimpan data pelanggan baru ke tabel customers dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
+    $queryNewCust = "INSERT INTO customers (name, email, password, phone) #menyimpan data pelanggan baru ke tabel customers dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
                      VALUES ('$customer_name', '$customer_email', '123456', '$customer_phone')";
     mysqli_query($koneksi, $queryNewCust); //menjalankan query dengan koneksi ke database, kemudian menyimpan hasilnya di variabel $queryNewCust
     // Ambil ID pelanggan baru yang baru saja dibuat
@@ -34,7 +34,7 @@ if (mysqli_num_rows($checkCustomer) > 0) {
 }
 
 // --- TAHAP 2: Simpan Data Pembayaran (transactions) ---
-$queryTransaction = "INSERT INTO transactions (customerID, total, payment_method, transaction_date) //menyimpan data transaksi ke tabel transactions dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
+$queryTransaction = "INSERT INTO transactions (customerID, total, payment_method, transaction_date) #menyimpan data transaksi ke tabel transactions dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
                      VALUES ('$customerID', '$total_price', '$payment_method', NOW())";
 mysqli_query($koneksi, $queryTransaction); //menjalankan query dengan koneksi ke database, kemudian menyimpan hasilnya di variabel $queryTransaction
 
@@ -50,7 +50,7 @@ foreach ($selected_seats as $seatID) { //mengulang setiap ID kursi yang dipilih 
     // Membuat kode tiket acak yang unik, misal: TKT72819
     $ticketCode = 'TKT' . rand(10000, 99999);//membuat kode tiket acak yang unik dengan menambahkan 'TKT' di depan angka acak antara 10000 dan 99999, kemudian menyimpannya dalam variabel $ticketCode
     
-    $queryTicket = "INSERT INTO ticket (transactionID, showtimeID, seatID, price, ticketCode, ticketStatus) //menyimpan data tiket ke tabel ticket dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
+    $queryTicket = "INSERT INTO ticket (transactionID, showtimeID, seatID, price, ticketCode, ticketStatus) #menyimpan data tiket ke tabel ticket dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
                     VALUES ('$transactionID', '$showtimeID', '$seatID', '$harga_satuan', '$ticketCode', 'Unused')";
     mysqli_query($koneksi, $queryTicket); //menjalankan query dengan koneksi ke database, kemudian menyimpan hasilnya di variabel $queryTicket
 }
