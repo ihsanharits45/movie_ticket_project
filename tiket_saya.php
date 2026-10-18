@@ -1,29 +1,29 @@
 <?php
-session_start();
-include 'koneksi.php';
+session_start(); // untuk memulai session agar bisa menggunakan sistem Session (gelang tangan)
+include 'koneksi.php'; //manggil koneksi.php untuk koneksi ke database
 
 // 1. Wajib login untuk membuka halaman ini
-if (!isset($_SESSION['customerID'])) {
+if (!isset($_SESSION['customerID'])) { //memeriksa apakah session customerID sudah ada, jika tidak ada maka akan diarahkan ke halaman login.php
     header("Location: login.php");
     exit;
 }
 
-$customerID = $_SESSION['customerID'];
+$customerID = $_SESSION['customerID']; //mengambbil nilai customerID dari session dan menyimpannya dalam variabel $customerID
 
 // 2. Ambil semua tiket milik customer ini dari database
 $query = "SELECT ticket.*, transactions.transaction_date, movies.title, movies.poster, 
                  studio.studio_name, seat.seat_code, showtime.show_date, showtime.start_time
-          FROM transactions
-          JOIN ticket ON transactions.transactionID = ticket.transactionID
-          JOIN seat ON ticket.seatID = seat.seatID
-          JOIN showtime ON ticket.showtimeID = showtime.showtimeID
-          JOIN movies ON showtime.movieID = movies.movieID
-          JOIN studio ON showtime.studioID = studio.studioID
-          WHERE transactions.customerID = '$customerID'
-          ORDER BY transactions.transaction_date DESC";
+          FROM transactions #jadi tabel utama yang dicari
+          JOIN ticket ON transactions.transactionID = ticket.transactionID #menggabungkan tabel transactions dengan tabel ticket berdasarkan transactionID yang sama
+          JOIN seat ON ticket.seatID = seat.seatID #menggabungkan tabel ticket dengan tabel seat berdasarkan seatID yang sama
+          JOIN showtime ON ticket.showtimeID = showtime.showtimeID #menggabungkan tabel ticket dengan tabel showtime berdasarkan showtimeID yang sama
+          JOIN movies ON showtime.movieID = movies.movieID #menggabungkan tabel showtime dengan tabel movies berdasarkan movieID yang sama
+          JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan tabel studio berdasarkan studioID yang sama
+          WHERE transactions.customerID = '$customerID' #memfilter hasil query untuk hanya mengambil tiket yang dimiliki oleh customer dengan customerID yang sesuai
+          ORDER BY transactions.transaction_date DESC"; #mengurutkan hasil berdasarkan tanggal transaksi dari yang terbaru ke yang terlama.
 
-$result = mysqli_query($koneksi, $query);
-$jumlah_tiket = mysqli_num_rows($result);
+$result = mysqli_query($koneksi, $query); //mengirim query ke database dan menyimpan hasilnya dalam variabel $result
+$jumlah_tiket = mysqli_num_rows($result); //menghitung jumlah tiket yang ditemukan dan menyimpannya dalam variabel $jumlah_tiket
 ?>
 
 <!DOCTYPE html>

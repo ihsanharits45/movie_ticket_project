@@ -3,35 +3,36 @@ session_start();//manggil session_start() untuk memulai sesi pengguna
 include 'koneksi.php';//manggil koneksi.php untuk koneksi ke database
 
 // 1. Validasi trx_id di URL
-if (!isset($_GET['trx_id'])) {
-    header("Location: index.php");
+if (!isset($_GET['trx_id'])) { //memeriksa apakah parameter trx_id ada di URL, jika tidak ada maka akan diarahkan ke halaman index.php
+    header("Location: index.php"); //mengarahkan broswer ke halaman index.php jika parameter trx_id tidak ada di URL
     exit;
 }
 
-$trxID = $_GET['trx_id'];
+$trxID = $_GET['trx_id']; //menyimpan nilai parameter trx_id dari URL ke dalam variabel $trxID
 
 // 2. Ambil data transaksi & pelanggan
-$queryTrx = "SELECT transactions.*, customers.name, customers.email, customers.phone 
-             FROM transactions 
-             JOIN customers ON transactions.customerID = customers.customerID 
-             WHERE transactions.transactionID = '$trxID'";
-$resultTrx = mysqli_query($koneksi, $queryTrx);
-$trx = mysqli_fetch_assoc($resultTrx);
+$queryTrx = "SELECT transactions.*, customers.name, customers.email, customers.phone #mengambil data transaksi dan data pelanggan dari tabel transactions dan customers dengan menggunakan JOIN, berdasarkan transactionID yang sesuai dengan trxID yang diterima dari URL
+             FROM transactions #jadi tabel utama yang dicari
+             JOIN customers ON transactions.customerID = customers.customerID #menggabungkan tabel transactions dengan tabel customers berdasarkan customerID yang sama
+             WHERE transactions.transactionID = '$trxID'"; //ngambil data transaksi yang memiliki transactionID sesuai dengan trxID yang diterima dari URL
+$resultTrx = mysqli_query($koneksi, $queryTrx);//mengirim query ke database dan menyimpan hasilnya dalam variabel $resultTrx
+$trx = mysqli_fetch_assoc($resultTrx); //mengambil data transaksi dari hasil query dan menyimpannya dalam array asosiatif $trx
 
-if (!$trx) {
-    die("Transaksi tidak ditemukan!");
+//ngecek apakah data transaksi ditemukan atau tidak
+if (!$trx) { //jika g ada
+    die("Transaksi tidak ditemukan!");//hentikan program dan tampilkan pesan error "Transaksi tidak ditemukan!"
 }
 
 // 3. Ambil daftar tiket pada transaksi ini (termasuk poster film)
 $queryTiket = "SELECT ticket.*, seat.seat_code, movies.title, movies.poster, studio.studio_name, showtime.show_date, showtime.start_time 
-               FROM ticket 
-               JOIN seat ON ticket.seatID = seat.seatID 
-               JOIN showtime ON ticket.showtimeID = showtime.showtimeID 
-               JOIN movies ON showtime.movieID = movies.movieID 
-               JOIN studio ON showtime.studioID = studio.studioID 
-               WHERE ticket.transactionID = '$trxID'";
-$resultTiket = mysqli_query($koneksi, $queryTiket);
-$jumlah_tiket = mysqli_num_rows($resultTiket);
+               FROM ticket #menjadi tabel utama yang dicari
+               JOIN seat ON ticket.seatID = seat.seatID #menggabungkan tabel ticket dengan tabel seat berdasarkan seatID yang sama
+               JOIN showtime ON ticket.showtimeID = showtime.showtimeID #menggabungkan tabel ticket dengan tabel showtime berdasarkan showtimeID yang sama
+               JOIN movies ON showtime.movieID = movies.movieID #menggabungkan tabel showtime dengan tabel movies berdasarkan movieID yang sama
+               JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan tabel studio berdasarkan studioID yang sama
+               WHERE ticket.transactionID = '$trxID'"; #mengambil data tiket yang memiliki transactionID sesuai dengan trxID yang diterima dari URL
+$resultTiket = mysqli_query($koneksi, $queryTiket); //mengirim query ke database dan menyimpan hasilnya dalam variabel $resultTiket
+$jumlah_tiket = mysqli_num_rows($resultTiket); //menghitung jumlah tiket yang ditemukan dan menyimpannya dalam variabel $jumlah_tiket
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +41,7 @@ $jumlah_tiket = mysqli_num_rows($resultTiket);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Ticket #<?php echo $trxID; ?> - CineTix</title>
-    
+
     <!-- Google Fonts & Bootstrap -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
