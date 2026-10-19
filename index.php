@@ -99,7 +99,7 @@ $jumlah_film = mysqli_num_rows($result);//menghitung jumlah film yang sedang tay
                         <!-- Poster Film & Rating Usia -->
                         <div class="movie-poster-wrap">
                             <span class="age-badge"><?php echo $film['age_rating']; ?></span>
-                            <img src="assets/img/<?php echo $film['poster']; ?>" alt="<?php echo $film['title']; ?>">
+                            <img src="assets/img/<?php echo $film['poster']; ?>" alt="<?php echo $film['title']; ?>"> //
                         </div>
 
                         <!-- Keterangan Film -->
