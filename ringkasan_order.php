@@ -22,9 +22,9 @@ if (empty($selected_seats)) {
 
 // 3. Ambil informasi jadwal tayang
 $queryJadwal = "SELECT showtime.*, movies.title, movies.poster, studio.studio_name 
-                FROM showtime 
-                JOIN movies ON showtime.movieID = movies.movieID 
-                JOIN studio ON showtime.studioID = studio.studioID 
+                FROM showtime #jadikan sumber data utama
+                JOIN movies ON showtime.movieID = movies.movieID #menggabungkan tabel showtime dengan movies untuk mendapatkan judul dan poster film
+                JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
                 WHERE showtime.showtimeID = '$showtimeID'";
 $resultJadwal = mysqli_query($koneksi, $queryJadwal);
 $jadwal = mysqli_fetch_assoc($resultJadwal);
