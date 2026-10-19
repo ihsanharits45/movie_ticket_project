@@ -35,7 +35,7 @@ $queryJadwal = "SELECT showtime.*, studio.studio_name #mengambil semua data dari
                 FROM showtime #dijadikan sumber data utama
                 JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
                 WHERE showtime.movieID = '$movieID' #dimana movieID di tabel showtime sama dengan $movieID
-                ORDER BY showtime.show_date ASC, showtime.start_time ASC";
+                ORDER BY showtime.show_date ASC, showtime.start_time ASC"; //mengurutkan hasil query berdasarkan tanggal tayang dan jam tayang secara ascending
 $resultJadwal = mysqli_query($koneksi, $queryJadwal); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultJadwal
 ?>
 
