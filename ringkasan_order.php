@@ -1,6 +1,6 @@
 <?php
-session_start();
-include 'koneksi.php';
+session_start(); // Memulai sesi untuk mengakses data pengguna yang login
+include 'koneksi.php'; // manggil koneksi database
 
 // 1. Cek apakah data dikirim via POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -8,13 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$showtimeID = $_POST['showtime_id'] ?? null;
-$selected_seats = $_POST['selected_seats'] ?? [];
+$showtimeID = $_POST['showtime_id'] ?? null; // Ambil showtimeID dari data POST
+$selected_seats = $_POST['selected_seats'] ?? []; // Ambil kursi yang dipilih dari data POST
 
 // 2. Validasi: Jangan izinkan jika belum memilih kursi
-if (empty($selected_seats)) {
+if (empty($selected_seats)) { //kalau kursi kosong, ga ada yang dipilih
     echo "<script>
-            alert('Silakan pilih minimal 1 kursi!');
+            alert('Silakan pilih minimal 1 kursi!'); 
             window.location.href = 'pilih_kursi.php?showtime_id=$showtimeID';
           </script>";
     exit;
@@ -25,7 +25,7 @@ $queryJadwal = "SELECT showtime.*, movies.title, movies.poster, studio.studio_na
                 FROM showtime #jadikan sumber data utama
                 JOIN movies ON showtime.movieID = movies.movieID #menggabungkan tabel showtime dengan movies untuk mendapatkan judul dan poster film
                 JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
-                WHERE showtime.showtimeID = '$showtimeID'";
+                WHERE showtime.showtimeID = '$showtimeID'"; 
 $resultJadwal = mysqli_query($koneksi, $queryJadwal);
 $jadwal = mysqli_fetch_assoc($resultJadwal);
 
