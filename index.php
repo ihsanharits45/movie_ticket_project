@@ -1,16 +1,16 @@
 <?php
-session_start();//manggil session_start() untuk memulai sesi pengguna
-include 'koneksi.php';//manggil koneksi.php untuk koneksi ke database
+session_start();
+include 'koneksi.php';
 
 // Query tetap sama persis seperti yang kita pelajari
-$query = "SELECT movies.*, GROUP_CONCAT(genres.genre_name SEPARATOR ', ') AS genre_list  #mengambil semua data dari tabel movies dan menggabungkan nama genre dari tabel genre menjadi 1 teks, hasilnya diberi nama genre_list
-          FROM movies #dijadikan sumber data utama dari tabel movies
-          LEFT JOIN movie_genres ON movies.movieID = movie_genres.movieID #menggabungkan tabel movies dengan movie_genres untuk mendapatkan genre film
-          LEFT JOIN genres ON movie_genres.genreID = genres.genreID  #menggabungkan tabel movie_genres dengan genres untuk mendapatkan nama genre 
-          GROUP BY movies.movieID"; //mengelompokkan hasil agar setiap film hanya muncul sekali, meskipun memiliki beberapa genre
+$query = "SELECT movies.*, GROUP_CONCAT(genres.genre_name SEPARATOR ', ') AS genre_list 
+          FROM movies
+          LEFT JOIN movie_genres ON movies.movieID = movie_genres.movieID
+          LEFT JOIN genres ON movie_genres.genreID = genres.genreID 
+          GROUP BY movies.movieID";
 
-$result = mysqli_query($koneksi, $query);//menjalankan query dengan koneksi ke database, kemudian menyimpan hasilnya di variabel $result
-$jumlah_film = mysqli_num_rows($result);//menghitung jumlah film yang sedang tayang dengan menghitung jumlah baris hasil query
+$result = mysqli_query($koneksi, $query);
+$jumlah_film = mysqli_num_rows($result);
 ?>
 
 <!DOCTYPE html>

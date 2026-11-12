@@ -1,25 +1,25 @@
 <?php
-session_start();// Wajib ditaruh paling atas agar PHP bisa menggunakan sistem Session (gelang tangan)
-include 'koneksi.php';//manggil koneksi.php untuk koneksi ke database
+session_start();
+include 'koneksi.php';
 
-//mengecek session, dengan nama customerID sudah dibuat atau sudah ada
+
 // Jika pengguna sudah login, langsung alihkan ke beranda
 if (isset($_SESSION['customerID'])) {
-    header("Location: index.php");//mengarahkan broswer ke index.php
+    header("Location: index.php");
     exit;
 }
 
-$pesan_error = '';//variabel untuk menampung pesan error jika login gagal
+$pesan_error = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {//memeriksa apakah halaman dibuka dengan setelah form dikirm dgn metode POST
-    $email    = mysqli_real_escape_string($koneksi, $_POST['email']);//mengamankan email sebelum dimasukkan ke query SQL
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = mysqli_real_escape_string($koneksi, $_POST['email']);
     $password = $_POST['password'];
 
-    $query = "SELECT * FROM customers WHERE email = '$email'";//panggilan untk mencari data di tabel customers berdasarkan email yang dimasukkan pengguna
-    $result = mysqli_query($koneksi, $query);//menjalankan query dengan koneksi ke database, kemudian menyimpan hasilnya di variabel $result
+    $query = "SELECT * FROM customers WHERE email = '$email'";
+    $result = mysqli_query($koneksi, $query);
 
     if (mysqli_num_rows($result) === 1) {
-        $user = mysqli_fetch_assoc($result);//mengambil data pengguna dari hasil query dan menyimpannya dalam array asosiatif $user
+        $user = mysqli_fetch_assoc($result);
 
         //mengecek password lalu menyimpan data pengguna ke session jika password benar
         if (password_verify($password, $user['password']) || $password === $user['password']) {
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {//memeriksa apakah halaman dibuka de
             $_SESSION['customerPhone'] = $user['phone'];
 
             //balik ke halaman index.php jika login berhasil
-            header("Location: index.php");//mengarahkan broswer ke halaman lain
+            header("Location: index.php");
             exit;
         } else {
             $pesan_error = "Password yang kamu masukkan salah!";

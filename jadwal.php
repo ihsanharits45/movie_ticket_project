@@ -1,6 +1,6 @@
 <?php
-session_start();//manggil session_start() untuk memulai sesi pengguna
-include 'koneksi.php';//manggil koneksi.php untuk koneksi ke database
+session_start();
+include 'koneksi.php';
 
 // SATPAM: Jika belum login (masih Guest), tendang ke halaman login
 if (!isset($_SESSION['customerID'])) {
@@ -9,34 +9,34 @@ if (!isset($_SESSION['customerID'])) {
 }
 
 // 1. Validasi: Pastikan ada ID film di URL
-if (!isset($_GET['id'])) { //mengecek apakah parameter 'id' ada di URL.
-    header("Location: index.php");//jika tidak ada, maka langsung alihkan ke halaman index.php
+if (!isset($_GET['id'])) { 
+    header("Location: index.php");
     exit;
 }
 
-$movieID = $_GET['id'];//mengambil nilai parameter 'id' dari URL dan menyimpannya dalam variabel $movieID
+$movieID = $_GET['id'];
 
 // 2. Ambil detail film beserta genrenya
-$queryFilm = "SELECT movies.*, GROUP_CONCAT(genres.genre_name SEPARATOR ', ') AS genre_list  #mengambil semua data dari tabel movies dan menggabungkan nama genre dari tabel genre menjadi 1 teks, hasilnya diberi nama genre_list
-              FROM movies #dijadikan sumber data utama
-              LEFT JOIN movie_genres ON movies.movieID = movie_genres.movieID #menggabungkan tabel movies dengan movie_genres untuk mendapatkan genre film
-              LEFT JOIN genres ON movie_genres.genreID = genres.genreID  #menggabungkan tabel movie_genres dengan genres untuk mendapatkan nama genre 
-              WHERE movies.movieID = '$movieID' #memfilter hasil query untuk hanya mengambil film dengan ID yang sesuai dengan $movieID
-              GROUP BY movies.movieID"; //mengelompokkan hasil agar setiap film hanya muncul sekali
-$resultFilm = mysqli_query($koneksi, $queryFilm); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultFilm
-$film = mysqli_fetch_assoc($resultFilm); //mengambil satu baris hasil query sebagai array asosiatif dan menyimpannya dalam variabel $film
+$queryFilm = "SELECT movies.*, GROUP_CONCAT(genres.genre_name SEPARATOR ', ') AS genre_list  
+              FROM movies 
+              LEFT JOIN movie_genres ON movies.movieID = movie_genres.movieID 
+              LEFT JOIN genres ON movie_genres.genreID = genres.genreID  
+              WHERE movies.movieID = '$movieID'  
+              GROUP BY movies.movieID"; 
+$resultFilm = mysqli_query($koneksi, $queryFilm); 
+$film = mysqli_fetch_assoc($resultFilm); 
 
 if (!$film) {
-    die("Film tidak ditemukan!");//jika film tidak ditemukan, maka hentikan eksekusi dan tampilkan pesan error
+    die("Film tidak ditemukan!");
 }
 
 // 3. Ambil jadwal tayang film ini digabung dengan studio
-$queryJadwal = "SELECT showtime.*, studio.studio_name #mengambil semua data dari tabel showtime dan nama studio dari tabel studio
-                FROM showtime #dijadikan sumber data utama
-                JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
-                WHERE showtime.movieID = '$movieID' #dimana movieID di tabel showtime sama dengan $movieID
-                ORDER BY showtime.show_date ASC, showtime.start_time ASC"; //mengurutkan hasil query berdasarkan tanggal tayang dan jam tayang secara ascending
-$resultJadwal = mysqli_query($koneksi, $queryJadwal); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultJadwal
+$queryJadwal = "SELECT showtime.*, studio.studio_name 
+                FROM showtime 
+                JOIN studio ON showtime.studioID = studio.studioID 
+                WHERE showtime.movieID = '$movieID' 
+                ORDER BY showtime.show_date ASC, showtime.start_time ASC"; 
+$resultJadwal = mysqli_query($koneksi, $queryJadwal); 
 ?>
 
 <!DOCTYPE html>

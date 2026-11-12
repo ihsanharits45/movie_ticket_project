@@ -1,48 +1,48 @@
 <?php
-session_start();//session_start() dipanggil untuk memulai sesi pengguna, memungkinkan penggunaan variabel session di seluruh halaman web.
-include 'koneksi.php';//menghubungkan file koneksi.php untuk mengakses database
+session_start();
+include 'koneksi.php';
 
 // 1. Validasi showtime_id di URL
-if (!isset($_GET['showtime_id'])) { //mengecek apakah parameter 'showtime_id' ada di URL.
-    header("Location: index.php"); //jika tidak ada, maka langsung alihkan ke halaman index.php
+if (!isset($_GET['showtime_id'])) { 
+    header("Location: index.php");
     exit;
 }
 
-$showtimeID = $_GET['showtime_id'];//mengambil nilai parameter 'showtime_id' dari URL dan menyimpannya dalam variabel $showtimeID
+$showtimeID = $_GET['showtime_id'];
 
 // 2. Ambil detail jadwal (film, studio, harga)
-$queryJadwal = "SELECT showtime.*, movies.title, movies.poster, studio.studio_name #mengambil semua data dari tabel showtime, judul film dan poster dari tabel movies, dan nama studio dari tabel studio
-                FROM showtime #dijadikan sumber data utama
-                JOIN movies ON showtime.movieID = movies.movieID #menggabungkan tabel showtime dengan movies untuk mendapatkan judul film dan poster
-                JOIN studio ON showtime.studioID = studio.studioID #menggabungkan tabel showtime dengan studio untuk mendapatkan nama studio
-                WHERE showtime.showtimeID = '$showtimeID'"; #dimana showtimeID di tabel showtime sama dengan $showtimeID
-$resultJadwal = mysqli_query($koneksi, $queryJadwal);//mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultJadwal
-$jadwal = mysqli_fetch_assoc($resultJadwal);//mengambil satu baris hasil query sebagai array asosiatif dan menyimpannya dalam variabel $jadwal
+$queryJadwal = "SELECT showtime.*, movies.title, movies.poster, studio.studio_name 
+                FROM showtime 
+                JOIN movies ON showtime.movieID = movies.movieID 
+                JOIN studio ON showtime.studioID = studio.studioID 
+                WHERE showtime.showtimeID = '$showtimeID'"; 
+$resultJadwal = mysqli_query($koneksi, $queryJadwal);
+$jadwal = mysqli_fetch_assoc($resultJadwal);
 
-if (!$jadwal) {//! = not, jika $jadwal kosong atau tidak ada data
-    die("Jadwal tayang tidak ditemukan!");//jika jadwal tayang tidak ditemukan, maka hentikan eksekusi dan tampilkan pesan error
+if (!$jadwal) {
+    die("Jadwal tayang tidak ditemukan!");
 }
 
-$studioID = $jadwal['studioID'];//mengambil nilai studioID dari hasil query jadwal dan menyimpannya dalam variabel $studioID
+$studioID = $jadwal['studioID'];
 
 // 3. Ambil daftar ID kursi yang SUDAH DIBELI untuk jadwal ini
-$queryTerjual = "SELECT seatID FROM ticket WHERE showtimeID = '$showtimeID'"; //mengambil semua seatID dari tabel ticket yang sudah terjual untuk showtime tertentu
-$resultTerjual = mysqli_query($koneksi, $queryTerjual); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultTerjual
+$queryTerjual = "SELECT seatID FROM ticket WHERE showtimeID = '$showtimeID'";
+$resultTerjual = mysqli_query($koneksi, $queryTerjual); 
 
 $kursi_terjual = [];
-while ($row = mysqli_fetch_assoc($resultTerjual)) { //mengambil setiap baris hasil query sebagai array asosiatif dan menyimpannya dalam variabel $row
-    $kursi_terjual[] = $row['seatID']; //menambahkan seatID yang sudah terjual ke dalam array $kursi_terjual
+while ($row = mysqli_fetch_assoc($resultTerjual)) { 
+    $kursi_terjual[] = $row['seatID']; 
 }
 
-// 4. Ambil SEMUA kursi di studio ini (diurutkan rapi berdasarkan seatID) //ASC = ascending, mengurutkan dari nilai terkecil ke terbesar
-$queryKursi = "SELECT * FROM seat WHERE studioID = '$studioID' ORDER BY seatID ASC"; //mengambil semua data kursi dari tabel seat untuk studio tertentu dan mengurutkannya berdasarkan seatID secara ascending
-$resultKursi = mysqli_query($koneksi, $queryKursi); //mengirim query ke database menggunakan koneksi $koneksi dan menyimpan hasilnya dalam variabel $resultKursi
+// 4. Ambil SEMUA kursi di studio ini (diurutkan rapi berdasarkan seatID) 
+$queryKursi = "SELECT * FROM seat WHERE studioID = '$studioID' ORDER BY seatID ASC"; 
+$resultKursi = mysqli_query($koneksi, $queryKursi);
 
 // 5. Kelompokkan kursi per baris huruf (A, B, C, D, E)
 $kursi_per_baris = [];
-while ($seat = mysqli_fetch_assoc($resultKursi)) { //mengambil setiap baris hasil query sebagai array asosiatif dan menyimpannya dalam variabel $seat
-    $huruf = substr($seat['seat_code'], 0, 1); //mengambil huruf pertama dari seat_code untuk menentukan baris kursi (misal: A1, B2, C3) //substr() digunakan untuk mengambil sebagian string, di sini mengambil karakter pertama dari seat_code
-    $kursi_per_baris[$huruf][] = $seat; //menambahkan kursi ke dalam array $kursi_per_baris berdasarkan huruf barisnya
+while ($seat = mysqli_fetch_assoc($resultKursi)) { 
+    $huruf = substr($seat['seat_code'], 0, 1); 
+    $kursi_per_baris[$huruf][] = $seat; 
 }
 ?>
 

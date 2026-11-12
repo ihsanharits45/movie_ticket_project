@@ -1,19 +1,18 @@
 <?php
-include 'koneksi.php';//manggil koneksi.php untuk koneksi ke database
+include 'koneksi.php';
 
-$pesan_error = '';// Variabel untuk menampung pesan error jika pendaftaran gagal
-$pesan_sukses = '';// Variabel untuk menampung pesan sukses jika pendaftaran berhasil
+$pesan_error = '';
+$pesan_sukses = '';
 
 // Cek apakah formulir telah disubmit dengan metode POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name     = mysqli_real_escape_string($koneksi, $_POST['name']);//mengamankan nama sebelum dimasukkan ke query SQL
-    $email    = mysqli_real_escape_string($koneksi, $_POST['email']);//mengamankan email sebelum dimasukkan ke query SQL
-    $phone    = mysqli_real_escape_string($koneksi, $_POST['phone']);//mengamankan nomor telepon sebelum dimasukkan ke query SQL
+    $name     = mysqli_real_escape_string($koneksi, $_POST['name']);
+    $email    = mysqli_real_escape_string($koneksi, $_POST['email']);
+    $phone    = mysqli_real_escape_string($koneksi, $_POST['phone']);
     $password = $_POST['password'];
 
     // 1. Cek apakah email sudah terdaftar sebelumnya di tabel customers
-    $cek_email = mysqli_query($koneksi, "SELECT * FROM customers WHERE email = '$email'");//mengecek email dengan query SQL di tabel customers. $koneksi memberitau mysqli_query() database mana yang digunakan.
-    
+    $cek_email = mysqli_query($koneksi, "SELECT * FROM customers WHERE email = '$email'");
     if (mysqli_num_rows($cek_email) > 0) {
         $pesan_error = "Email sudah terdaftar! Silakan gunakan email lain.";
     } else {
@@ -21,13 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         // 3. Masukkan data ke tabel customers
-        $query = "INSERT INTO customers (name, email, password, phone)  //menyimpan data ke tabel customers dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
-                  VALUES ('$name', '$email', '$password_hash', '$phone')";//menyimpan data ke tabel customers dengan query SQL. $koneksi memberitau mysqli_query() database mana yang digunakan.
+        $query = "INSERT INTO customers (name, email, password, phone)  
+                  VALUES ('$name', '$email', '$password_hash', '$phone')";
         
-        if (mysqli_query($koneksi, $query)) {//menjalankan query dengan koneksi ke database
+        if (mysqli_query($koneksi, $query)) {
             $pesan_sukses = "Pendaftaran akun berhasil! Silakan login.";
         } else {
-            $pesan_error = "Gagal mendaftar: " . mysqli_error($koneksi);//menampilkan error jika query gagal dijalankan. $koneksi memberitau mysqli_error() database mana yang digunakan.
+            $pesan_error = "Gagal mendaftar: " . mysqli_error($koneksi);
         }
     }
 }

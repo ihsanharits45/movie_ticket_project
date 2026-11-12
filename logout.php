@@ -1,5 +1,5 @@
 <?php
-session_start();//manggil session_start() untuk memulai sesi pengguna
+session_start();
 
 // Hancurkan semua data session (menggunting gelang tangan)
 session_destroy();
